@@ -1,0 +1,2 @@
+FLASK_APP=blueblog
+FLASK_CONFIG=development
