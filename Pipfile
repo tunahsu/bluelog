@@ -11,6 +11,8 @@ flask-sqlalchemy = "*"
 flask-mail = "*"
 flask-ckeditor = "*"
 flask-moment = "*"
+flask-wtf = "*"
 
 [dev-packages]
-
+faker = "*"
+autopep8 = "*"

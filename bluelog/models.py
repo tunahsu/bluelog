@@ -1,5 +1,7 @@
 from bluelog.extensions import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,11 +12,19 @@ class Admin(db.Model):
     name = db.Column(db.String(30))
     about = db.Column(db.Text)
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
 
     posts = db.relationship('Post', back_populates='category')
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,22 +37,25 @@ class Post(db.Model):
 
     comments = db.relationship('Comment', backref='post', cascade='all')
 
+
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author = db.Column(db.String(30))
     email = db.Column(db.String(254))
     site = db.Column(db.String(255))
     body = db.Column(db.Text)
-    from_admin = db.Column(db.Boolean, default=False) # is the comment from admin
-    reviewed = db.Column(db.Boolean, default=False) # is the comment approved
+    # is the comment from admin
+    from_admin = db.Column(db.Boolean, default=False)
+    reviewed = db.Column(db.Boolean, default=False)  # is the comment approved
     timestamp = db.Column(db.Datetime, default=datetime.utcnow, index=True)
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     post = db.relationship('Post', back_populates='comments')
 
-
     # relationship() with parameter remoted_side to set
     # id => remote side, replied => local side
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
-    replied = db.relationship('Comment', back_populates='replies', remoted_side=[id])
-    replies = db.relationship('Comment', back_populates='replied', cascade='all')
+    replied = db.relationship(
+        'Comment', back_populates='replies', remoted_side=[id])
+    replies = db.relationship(
+        'Comment', back_populates='replied', cascade='all')

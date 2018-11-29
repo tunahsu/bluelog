@@ -1,0 +1,1 @@
+from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments

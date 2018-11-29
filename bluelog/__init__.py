@@ -1,6 +1,13 @@
-from flask import Flask
+import os
+from flask import Flask, render_template, request
+from flask_wtf.csrf import CSRFError
+
 from bluelog.setting import config
 from bluelog.extensions import bootstrap, db, mail, ckeditor, moment
+
+from bluelog.blueprints.admin import admin_bp
+from bluelog.blueprints.auth import auth_bp
+from bluelog.blueprints.blog import blog_bp
 
 # when use [flask run], it will automatically invoke the function named create_app() / make_app()
 def create_app(config_name=None):
@@ -19,8 +26,10 @@ def create_app(config_name=None):
     register_template_context(app)
     return app
 
+
 def register_logging(app):
     pass
+
 
 def register_extensions(app):
     bootstrap.init_app(app)
@@ -29,13 +38,16 @@ def register_extensions(app):
     ckeditor.init_app(app)
     moment.init_app(app)
 
+
 def register_blueprints(app):
-    app.register_blueprint('blog')
-    app.register_blueprint('auth', url_prefix='/auth')
-    app.register_blueprint('admin', url_prefix='/admin')
+    app.register_blueprint(blog_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+
 
 def register_commands(app):
     pass
+
 
 def register_errors(app):
     # bad request / invalid hostname
@@ -63,6 +75,7 @@ def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
         return dict(db=db)
+
 
 def register_template_context(app):
     pass

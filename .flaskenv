@@ -1,2 +1,2 @@
-FLASK_APP=blueblog
+FLASK_APP=bluelog
 FLASK_CONFIG=development
