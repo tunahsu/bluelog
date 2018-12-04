@@ -1,4 +1,6 @@
 from faker import Faker
+import random
+from sqlalchemy.exc import IntegrityError
 from bluelog.models import Admin, Category, Post, Comment
 from bluelog.extensions import db
 
@@ -30,7 +32,7 @@ def fake_categories(count=10):
         # avoid the category name repeat
         try:
             db.session.commit()
-        except IndentationError:
+        except IntegrityError:
             db.session.rollback()
 
 
@@ -82,7 +84,7 @@ def fake_comments(count=500):
             site='https://tunahsu.com',
             body=fake.sentence(),
             timestamp=fake.date_time_this_year(),
-            from_admin=True
+            from_admin=True,
             reviewed=True,
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
@@ -99,7 +101,7 @@ def fake_comments(count=500):
             reviewed=True,
             replied=Comment.query.get(
                 random.randint(1, Comment.query.count())),
-            post=Post.query.get(random.randint(1, Post.query.count()))"""  """
+            post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
     db.session.commit()
