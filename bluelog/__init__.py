@@ -10,9 +10,9 @@ from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 
+from bluelog.models import Admin, Category
+
 # when use [flask run], it will automatically invoke the function named create_app() / make_app()
-
-
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
@@ -97,8 +97,6 @@ def register_errors(app):
         return render_template('errors/400.html', description=e.description), 400
 
 # when use [flask shell], it will invoke the function and register the items
-
-
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
@@ -107,4 +105,8 @@ def register_shell_context(app):
 
 
 def register_template_context(app):
-    pass
+    @app.context_processor
+    def make_template_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        return dict(admin=admin, categories=categories)
