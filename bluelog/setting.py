@@ -36,6 +36,7 @@ class BaseConfig(object):
     BLUELOG_SLOW_QUERY_THRESHOLD = 1
 
     BLUELOG_POST_PER_PAGE = 5
+    BLUELOG_COMMENT_PER_PAGE = 10
 
 
 class DevelopmentConfig(BaseConfig):

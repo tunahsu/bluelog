@@ -64,6 +64,7 @@
 	{% block scripts %}
 	<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	{{ moment.include_moment() }}
 	{% endblock %}
 </body>
 </html>
