@@ -13,6 +13,8 @@ from bluelog.blueprints.blog import blog_bp
 from bluelog.models import Admin, Category
 
 # when use [flask run], it will automatically invoke the function named create_app() / make_app()
+
+
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
@@ -74,6 +76,41 @@ def register_commands(app):
 
         click.echo('Done.')
 
+    @app.cli.command()
+    @click.option('--username', prompt=True, help='The username used to login.')
+    @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True, help='The password used to login.')
+    def init(username, password):
+        """Building Bluelog, just for you."""
+
+        click.echo('Initializing the database...')
+        db.create_all()
+
+        admin = Admin.query.first()
+        if admin:
+            click.echo('The administrator already exists, updating...')
+            admin.username = username
+            admin.set_password(password)
+        else:
+            click.echo('Creating the temporary administrator account...')
+            admin = Admin(
+                username=username,
+                blog_title='Bluelog',
+                blog_sub_title="No, I'm the real thing.",
+                name='Admin',
+                about='Anything about you.'
+            )
+            admin.set_password(password)
+            db.session.add(admin)
+
+        category = Category.query.first()
+        if category is None:
+            click.echo('Creating the default category...')
+            category = Category(name='Default')
+            db.session.add(category)
+
+        db.session.commit()
+        click.echo('Done.')
+
 
 def register_errors(app):
     # bad request / invalid hostname
@@ -97,6 +134,8 @@ def register_errors(app):
         return render_template('errors/400.html', description=e.description), 400
 
 # when use [flask shell], it will invoke the function and register the items
+
+
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():

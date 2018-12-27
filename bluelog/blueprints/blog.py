@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, current_app
-from bluelog.models import Post, Category, Comment
+from bluelog.models import Post, Category, Comment, Admin
 
 blog_bp = Blueprint('blog', __name__)
 
@@ -11,7 +11,8 @@ def index(page):
     per_page = current_app.config['BLUELOG_POST_PER_PAGE']
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=per_page)
     posts = pagination.items
-    return render_template('blog/index.html', posts=posts, pagination=pagination)
+    admin = Admin.query.first()
+    return render_template('blog/index.html', admin=admin, posts=posts, pagination=pagination)
 
 
 @blog_bp.route('/about')
