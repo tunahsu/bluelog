@@ -12,6 +12,7 @@ flask-mail = "*"
 flask-ckeditor = "*"
 flask-moment = "*"
 flask-wtf = "*"
+flask-login = "*"
 
 [dev-packages]
 faker = "*"

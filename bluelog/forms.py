@@ -17,8 +17,8 @@ class LoginForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    title = StringField('Title' validators=[DataRequired(), Length(1, 60)])
-    category = SelectField('Category' coerce=int, default=1)
+    title = StringField('Title', validators=[DataRequired(), Length(1, 60)])
+    category = SelectField('Category', coerce=int, default=1)
     body = CKEditorField('Body', validators=[DataRequired()])
     submit = SubmitField()
 
@@ -41,7 +41,7 @@ class CategoryForm(FlaskForm):
 class CommentForm(FlaskForm):
     author = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])
-    site = StringField('Site', validators=[Optional, URL(), Length(0, 255)])
+    site = StringField('Site', validators=[Optional(), URL(), Length(0, 255)])
     body = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField()
 

@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFError
 
 from bluelog.setting import config
-from bluelog.extensions import bootstrap, db, mail, ckeditor, moment
+from bluelog.extensions import bootstrap, db, mail, ckeditor, moment, login_manager
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
@@ -39,6 +39,7 @@ def register_logging(app):
 def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
+    login_manager.init_app(app)
     mail.init_app(app)
     ckeditor.init_app(app)
     moment.init_app(app)

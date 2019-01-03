@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'bootstrap/form.html' import render_form %}
 
 {% block content %}
 <div class="container">
@@ -47,19 +48,8 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- Comments Form -->
-			<div class="card my-4">
-				<h5 class="card-header">Leave a Comment:</h5>
-				<div class="card-body">
-					<form>
-						<div class="form-group">
-							<textarea class="form-control" rows="3"></textarea>
-						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
-					</form>
-				</div>
-			</div>
+			<br>
+			<br>
 
 			<!-- Comment with nested comments -->
 			{% if comments %}
@@ -94,10 +84,28 @@
 					<p class="mb-1">
 						{{ comment.body }}
 					</p>
+					<div class="float-right">
+						<a href="{{ url_for('.reply_comment', comment_id=comment.id) }}" class="btn btn-light btn-sm">Reply</a>
+					</div>
 				</li>
 			</div>
 			{% endfor %}
+			<div class="page-footer">{{ render_pagination(pagination) }}</div>
 			{% endif %}
+
+			<!-- Comments Form -->
+			<div class="card my-4" id="comment-form">
+				<h5 class="card-header">Leave a Comment:</h5>
+				<div class="card-body">
+					{% if request.args.get('reply') %}
+					<div class="alert alert-dark">
+						Reply to <strong>{{ request.args.get('author') }}</strong>
+						<a class="float-right" href="{{ url_for('.show_post', post_id=post.id) }}">Cancel</a>
+					</div>
+					{% endif %}
+					{{ render_form(form, action=request.full_path) }}
+				</div>
+			</div>
 		</div>
 
 		<!-- Sidebar Widgets Column -->
